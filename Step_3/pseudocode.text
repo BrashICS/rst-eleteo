@@ -1,8 +1,27 @@
 Global variables:
-- snake
-- food
-- scale for the particles
-- width
-- height
-- variable 
+  - snake
+  - food
+  - scale for the particles
+  - width
+  - height
+  - variable for the grid scale (width and height)
 
+use p5js for animation
+
+event listeners:
+  - RIGHT_ARROW
+  - LEFT_ARROW
+  - DOWN_ARROW
+  - UP_ARROW
+  (set snake's direction in respective directions)
+
+functions:
+  - set food location randomly
+  - detect keys pressed (put in draw())
+  - game over function (end the game, clear canvas, display text)
+
+Snake class properties:
+  - direction
+  - array for its body (create a square in the first index to start)
+  - length
+  - 
