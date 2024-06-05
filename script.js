@@ -10,17 +10,22 @@
 
 let food;
 let snake;
-let scaleGrid = 30; // pixels?
-let width = 420;
-let height = 420;
+let scaleGrid = 15; // pixels?
+let width = 390;
+let height = 390;
 let widthScale;
 let heightScale;
+let score = 0;
+let fr = 5;
+let lastMilestone = 0;
+let hs = 0;
 
 function setup() {
+
   createCanvas(width,height);
   widthScale = width/scaleGrid;
   heightScale = height/scaleGrid;
-  frameRate(5);
+  frameRate(fr);
   snake = new Snake();
   setFoodloc();
 }
@@ -52,34 +57,48 @@ function draw() {
 
   scale(scaleGrid);
   background(231,233,150);
-
+  fill(151,162,117)
+  textAlign(CENTER)
+  textSize(8);
+  text(score, floor(widthScale/2),floor(heightScale/2)+2);
+  if (score > 0 && score % 5 === 0 && score !== lastMilestone) {
+    fr += 2;
+    frameRate(fr);
+    lastMilestone = score;
+  }
   if (snake.eat(food)==true) {
     setFoodloc();
+    score +=1;
   }
   snake.update()
   snake.display();
   noStroke();
-  fill(200,0,0);
+  fill(60 )
   rect(food.x, food.y, 1, 1);
   if (snake.gameOver()==true){
     noLoop();
     gameOverScreen();
   }
 }
+
 function gameOverScreen() {
-  resetMatrix();
   background(231,233,150);
   textFont('Courier New');
   fill(60)
-  textSize(50);
-  text('GAME OVER', 65, floor(height/2));
-  fill(60)
-  textSize(17);
-  text('PRESS SPACE TO PLAY AGAIN', 76, 240);
+  textSize(3);
+  text('GAME OVER', floor(widthScale/2),12);
+  textSize(1);
+  fill(89,94,80)
+  text(' PRESS SPACE \nTO PLAY AGAIN', floor(widthScale/2), 15);
+  if (score>hs) {hs=score}
+  text('HIGH SCORE:'+hs, floor(widthScale/2), floor(heightScale/2+5));
 }
 
 function resetGame() {
+  fr = 5;
+  score = 0;
   setup();
+  loop();
 }
 
 class Snake {
