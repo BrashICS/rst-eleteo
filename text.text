@@ -21,7 +21,6 @@ let lastMilestone = 0;
 let hs = 0;
 let mode = "start";
 let playB;
-let resetB;
 
 
 function setup() {
@@ -33,13 +32,6 @@ function setup() {
   createCanvas(width,height);
   playB.mousePressed(startGame);
   setVariables();
-  resetB = createButton('Play Again');
-  resetB.size(150, 35);
-  resetB.style("font-family", "Courier New");
-  resetB.style("font-size", "20px");
-  resetB.position(width/2-68,height/2+60);
-  resetB.mousePressed(resetGame);
-  resetB.hide()
 
 }
 
@@ -103,18 +95,8 @@ function draw() {
     rect(food.x, food.y, 1, 1);
     if (snake.gameOver()==true){
       gameOverScreen();
+      noLoop();
     }
-  }
-  else if (mode == "gameover"){
-    background(231,233,150);
-    fill(60)
-    textSize(50);
-    text('GAME OVER', (width/2),height/2-20);
-    textSize(20);
-    fill(89,94,80)
-    if (score>hs) {hs=score}
-    text('YOUR SCORE: '+score+'\nHIGH SCORE: '+hs, (width/2),height/2+20);
-    resetB.show();
   }
   else if (mode=="start"){
     textFont('Courier New');
@@ -122,20 +104,24 @@ function draw() {
     fill(60)
     textSize(45);
     text('SNAKE GAME', width/2,height/2-20);
-  } 
+  }
 }
 
 function gameOverScreen() {
-  mode = "gameover";
-
+  background(231,233,150);
+  fill(60)
+  textSize(3);
+  text('GAME OVER', floor(widthScale/2),12);
+  textSize(1.2);
+  fill(89,94,80)
+  if (score>hs) {hs=score}
+  text('YOUR SCORE: '+score+'\nHIGH SCORE: '+hs, floor(widthScale/2), floor(heightScale/2+6));
 }
 
 function resetGame() {
-  mode = "play"
-  resetB.hide();
   fr = 5;
   score = 0;
-
+  mode = "play"
   setVariables();
 }
 
