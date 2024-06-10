@@ -22,17 +22,27 @@ let hs = 0;
 let mode = "start";
 let playB;
 let resetB;
-
+let instrB;
+let instrbackB;
 
 function setup() {
+  createCanvas(width,height);
   playB = createButton('Play');
-  playB.size(150, 35);
+  playB.size(160, 35);
   playB.style("font-family", "Courier New");
   playB.style("font-size", "20px");
-  playB.position(width/2-64,height/2+30);
-  createCanvas(width,height);
+  playB.position(width/2-70,height/2+30);
   playB.mousePressed(startGame);
+
+  instrB = createButton('Instructions');
+  instrB.size(160, 35);
+  instrB.style("font-family", "Courier New");
+  instrB.style("font-size", "20px");
+  instrB.position(width/2-70,height/2+70);
+  instrB.mousePressed(instructionScreen);
+
   setVariables();
+
   resetB = createButton('Play Again');
   resetB.size(150, 35);
   resetB.style("font-family", "Courier New");
@@ -41,7 +51,21 @@ function setup() {
   resetB.mousePressed(resetGame);
   resetB.hide()
 
+  instrbackB = createButton('Back');
+  instrbackB.size(150, 35);
+  instrbackB.style("font-family", "Courier New");
+  instrbackB.style("font-size", "20px");
+  instrbackB.position(width/2-68,height/2+120);
+  instrbackB.mousePressed(startScreen);
+  instrbackB.hide()
 }
+function startScreen() {
+  mode="start"
+  instrbackB.hide()
+  instrB.show()
+  playB.show()
+}
+
 
 function setVariables(){
   widthScale = width/scaleGrid;
@@ -61,6 +85,7 @@ function setFoodloc() {
 function startGame() {
   mode = "play";
   playB.remove();
+  instrB.remove();
 }
 
 function keyPressed() { // (0,0) is at top left
@@ -102,7 +127,7 @@ function draw() {
     fill(60 )
     rect(food.x, food.y, 1, 1);
     if (snake.gameOver()==true){
-      gameOverScreen();
+      mode = "gameover"
     }
   }
   else if (mode == "gameover"){
@@ -117,17 +142,31 @@ function draw() {
     resetB.show();
   }
   else if (mode=="start"){
+    background(231,233,150);
     textFont('Courier New');
     textAlign(CENTER)
     fill(60)
     textSize(45);
     text('SNAKE GAME', width/2,height/2-20);
-  } 
+  }
+  else if (mode=="instructions") {
+    background(231,233,150);
+    textAlign(CENTER)
+    fill(60)
+    textSize(30);
+    text("How to Play", (width/2),height/2-110);
+    textSize(16);
+    textAlign(LEFT)
+    text("Move the snake using arrow keys\nto eat the food in order to grow.\n\nDont let it touch the borders of\nthe screen or the snake will die.\n\nThe longer the snake, the faster\nit will move!", 30,height/2-50);
+    instrbackB.show()
+  }
 }
 
-function gameOverScreen() {
-  mode = "gameover";
 
+function instructionScreen() {
+ instrB.hide();
+ playB.hide();
+ mode = "instructions"
 }
 
 function resetGame() {
