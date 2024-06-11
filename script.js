@@ -8,9 +8,10 @@
 
 'use strict';
 
+// Declare global variables
 let food;
 let snake;
-let scaleGrid = 15; // pixels?
+let scaleGrid = 15;
 let width = 390;
 let height = 390;
 let widthScale;
@@ -20,13 +21,16 @@ let fr = 5;
 let lastMilestone = 0;
 let hs = 0;
 let mode = "start";
-let playB;
-let resetB;
-let instrB;
-let instrbackB;
+let playB; // play button
+let resetB; // play again button
+let instrB; // instructions button
+let instrbackB; // back button
 
-function setup() {
+function setup() { // create all buttons here
   createCanvas(width,height);
+  setVariables();
+
+  // create play button
   playB = createButton('Play');
   playB.size(160, 35);
   playB.style("font-family", "Courier New");
@@ -34,6 +38,7 @@ function setup() {
   playB.position(width/2-70,height/2+30);
   playB.mousePressed(startGame);
 
+  // create and hide instructions button
   instrB = createButton('Instructions');
   instrB.size(160, 35);
   instrB.style("font-family", "Courier New");
@@ -41,8 +46,7 @@ function setup() {
   instrB.position(width/2-70,height/2+70);
   instrB.mousePressed(instructionScreen);
 
-  setVariables();
-
+  // create and hide play again button
   resetB = createButton('Play Again');
   resetB.size(150, 35);
   resetB.style("font-family", "Courier New");
@@ -51,6 +55,7 @@ function setup() {
   resetB.mousePressed(resetGame);
   resetB.hide()
 
+  // create instructions button
   instrbackB = createButton('Back');
   instrbackB.size(150, 35);
   instrbackB.style("font-family", "Courier New");
@@ -59,15 +64,16 @@ function setup() {
   instrbackB.mousePressed(startScreen);
   instrbackB.hide()
 }
-function startScreen() {
-  mode="start"
+
+function startScreen() { // to display start screen
+  mode = "start"
   instrbackB.hide()
   instrB.show()
   playB.show()
 }
 
 
-function setVariables(){
+function setVariables() { // set up game
   widthScale = width/scaleGrid;
   heightScale = height/scaleGrid;
   frameRate(fr);
@@ -75,20 +81,20 @@ function setVariables(){
   setFoodloc();
 }
 
-function setFoodloc() {
+function setFoodloc() { // random location for food
   let x = floor(random(widthScale));
   let y = floor(random(heightScale));
   food = createVector(x, y);
 
 }
 
-function startGame() {
+function startGame() { // activate game when play button is pressed
   mode = "play";
   playB.remove();
   instrB.remove();
 }
 
-function keyPressed() { // (0,0) is at top left
+function keyPressed() { // detect keys pressed
   if (keyCode === RIGHT_ARROW) {
     snake.setDir(1,0);
   }
@@ -105,101 +111,125 @@ function keyPressed() { // (0,0) is at top left
 
 function draw() {
   background(231,233,150);
-  if (mode == "play") {
-    scale(scaleGrid);
+  // four modes: play, start, gameover, instructions
 
+  if (mode == "play") { // run game
+    scale(scaleGrid);
     fill(151,162,117)
+
+    // display score
     textAlign(CENTER)
     textSize(8);
     text(score, floor(widthScale/2),floor(heightScale/2)+2);
+
+    // increase framerate every 5 points
     if (score > 0 && score % 5 === 0 && score !== lastMilestone) {
       fr += 2;
       frameRate(fr);
       lastMilestone = score;
     }
+
+    // every time snake eats food
     if (snake.eat(food)==true) {
       setFoodloc();
       score +=1;
     }
+
+    // snake and food display
     snake.update()
     snake.display();
     noStroke();
-    fill(60 )
+    fill(60)
     rect(food.x, food.y, 1, 1);
+
+    // gameover
     if (snake.gameOver()==true){
       mode = "gameover"
     }
   }
-  else if (mode == "gameover"){
+
+  else if (mode == "gameover"){ // gameover screen
     background(231,233,150);
+
+    //display game over
     fill(60)
     textSize(50);
     text('GAME OVER', (width/2),height/2-20);
+
+    //display scores
     textSize(20);
     fill(89,94,80)
     if (score>hs) {hs=score}
     text('YOUR SCORE: '+score+'\nHIGH SCORE: '+hs, (width/2),height/2+20);
+
+    // show play again button
     resetB.show();
   }
-  else if (mode=="start"){
+
+  else if (mode=="start") { // start screen
     background(231,233,150);
+
+    // display game title
     textFont('Courier New');
     textAlign(CENTER)
     fill(60)
     textSize(45);
     text('SNAKE GAME', width/2,height/2-20);
   }
-  else if (mode=="instructions") {
+
+  else if (mode=="instructions") { // instructions screen
     background(231,233,150);
+
+    // display text
     textAlign(CENTER)
     fill(60)
     textSize(30);
     text("How to Play", (width/2),height/2-110);
     textSize(16);
     textAlign(LEFT)
-    text("Move the snake using arrow keys\nto eat the food in order to grow.\n\nDont let it touch the borders of\nthe screen or the snake will die.\n\nThe longer the snake, the faster\nit will move!", 30,height/2-50);
+    text("Arrow keys to move the snake\n\nThe more food, the longer the\nsnake, the faster it goes!\n\nDon't let it touch the border or\nitself or game over!", 30,height/2-50);
+
+    // show back button
     instrbackB.show()
   }
 }
 
-
-function instructionScreen() {
+function instructionScreen() { // function to activate instructions screen
  instrB.hide();
  playB.hide();
  mode = "instructions"
 }
 
-function resetGame() {
+function resetGame() { // function to activate reset game
   mode = "play"
   resetB.hide();
   fr = 5;
   score = 0;
-
   setVariables();
 }
 
-class Snake {
-  constructor() {
-    this.body = []; // create array for the body
-    this.body[0] = createVector((widthScale/2),(heightScale/2)); // set in middle of screen
+class Snake { // Snake
+  constructor() {// set snake properties
+    this.body = [];
+    this.body[0] = createVector((widthScale/2),(heightScale/2));
     this.xdir = 0;
     this.ydir = 0;
     this.lengthv = 0;
   }
 
-  setDir(x,y) {
+  setDir(x,y) { // set direction
     this.xdir = x;
     this.ydir = y;
   }
 
-  update() {
+  update() { // move snake
     let head = this.body[this.body.length-1].copy();
     this.body.shift();
     head.x += this.xdir;
     head.y += this.ydir;
     this.body.push(head);
   }
-  gameOver() {
+  gameOver() { // detect if snake overlaps or touches border
     let x = this.body[this.body.length-1].x;
     let y = this.body[this.body.length-1].y;
     if(x > widthScale-1 || x < 0 || y > heightScale-1 || y < 0) {
@@ -213,7 +243,8 @@ class Snake {
     }
     return false;
   }
-  eat(pos) {
+
+  eat(pos) { // detect if snake ate food
     let x = this.body[this.body.length-1].x;
     let y = this.body[this.body.length-1].y;
     if(x == pos.x && y == pos.y) {
@@ -222,13 +253,15 @@ class Snake {
     }
     return false;
   }
-  increase() {
+
+  increase() { // grow snake
     let head = this.body[this.body.length-1].copy();
     this.lengthv++;
     this.body.push(head);
   }
 
-  display() {
+  display() { // show snake
+
     for(let i = 0; i < this.body.length; i++) {
       fill(60);
       noStroke();
