@@ -38,7 +38,7 @@ function setup() { // create all buttons here
   playB.position(width/2-70,height/2+30);
   playB.mousePressed(startGame);
 
-  // create and hide instructions button
+  // create instructions button
   instrB = createButton('Instructions');
   instrB.size(160, 35);
   instrB.style("font-family", "Courier New");
@@ -55,7 +55,7 @@ function setup() { // create all buttons here
   resetB.mousePressed(resetGame);
   resetB.hide()
 
-  // create instructions button
+  // create and hide instructions back button
   instrbackB = createButton('Back');
   instrbackB.size(150, 35);
   instrbackB.style("font-family", "Courier New");
@@ -65,6 +65,14 @@ function setup() { // create all buttons here
   instrbackB.hide()
 }
 
+function setVariables() { // set up game
+  widthScale = width/scaleGrid;
+  heightScale = height/scaleGrid;
+  frameRate(fr);
+  snake = new Snake();
+  setFoodloc();
+}
+
 function startScreen() { // to display start screen
   mode = "start"
   instrbackB.hide()
@@ -72,13 +80,10 @@ function startScreen() { // to display start screen
   playB.show()
 }
 
-
-function setVariables() { // set up game
-  widthScale = width/scaleGrid;
-  heightScale = height/scaleGrid;
-  frameRate(fr);
-  snake = new Snake();
-  setFoodloc();
+function instructionScreen() { // function to activate instructions screen
+  instrB.hide();
+  playB.hide();
+  mode = "instructions"
 }
 
 function setFoodloc() { // random location for food
@@ -88,11 +93,6 @@ function setFoodloc() { // random location for food
 
 }
 
-function startGame() { // activate game when play button is pressed
-  mode = "play";
-  playB.remove();
-  instrB.remove();
-}
 
 function keyPressed() { // detect keys pressed
   if (keyCode === RIGHT_ARROW) {
@@ -107,6 +107,20 @@ function keyPressed() { // detect keys pressed
   else if (keyCode === UP_ARROW) {
     snake.setDir(0,-1);
   }
+}
+
+ function startGame() { // activate game when play button is pressed
+  mode = "play";
+  playB.remove();
+  instrB.remove();
+}
+
+ function resetGame() { // function to activate reset game
+   mode = "play"
+   resetB.hide();
+   fr = 5;
+   score = 0;
+   setVariables();
 }
 
 function draw() {
@@ -194,20 +208,6 @@ function draw() {
   }
 }
 
-function instructionScreen() { // function to activate instructions screen
- instrB.hide();
- playB.hide();
- mode = "instructions"
-}
-
-function resetGame() { // function to activate reset game
-  mode = "play"
-  resetB.hide();
-  fr = 5;
-  score = 0;
-  setVariables();
-}
-
 class Snake { // Snake
   constructor() {// set snake properties
     this.body = [];
@@ -229,6 +229,7 @@ class Snake { // Snake
     head.y += this.ydir;
     this.body.push(head);
   }
+
   gameOver() { // detect if snake overlaps or touches border
     let x = this.body[this.body.length-1].x;
     let y = this.body[this.body.length-1].y;
@@ -268,4 +269,11 @@ class Snake { // Snake
       rect(this.body[i].x, this.body[i].y, 1,1)
     }
   }
+}
+function setVariables() { // set up game
+  widthScale = width/scaleGrid;
+  heightScale = height/scaleGrid;
+  frameRate(fr);
+  snake = new Snake();
+  setFoodloc();
 }
