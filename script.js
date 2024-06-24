@@ -107,6 +107,7 @@ function keyPressed() { // detect keys pressed
   else if (keyCode === UP_ARROW) {
     snake.setDir(0,-1);
   }
+  return false;
 }
 
  function startGame() { // activate game when play button is pressed
